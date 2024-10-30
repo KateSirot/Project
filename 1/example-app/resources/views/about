@@ -1,0 +1,78 @@
+<?php
+      function generateExcerpt($content, $articleID){
+        // Ограничение текста до 250 символов
+        $excerpt = mb_substr($content, 0, 250);
+        // Проверка на наличие незакрытых слов и добавление многоточия
+        if (mb_strlen($content) > 250) {
+            $excerpt = rtrim(mb_substr($content, 0, mb_strrpos($excerpt, ' '))). '...';
+        }
+        // Добавление ссылки в последние три слова
+    $words = explode(' ', $excerpt);
+    if (count($words) > 3) {
+        $lastThreeWords = array_slice($words, -3, 3);
+        $link = '<a href="/article/' . $articleID . '">читать далее</a>';
+        $excerpt = implode(' ', array_slice($words, 0, -3)) . ' ' . implode(' ', $lastThreeWords) . ' ' . $link;
+    } else {
+        // Если текста мало, добавляем ссылку
+        $excerpt .= ' <a href="/article/' . $articleID . '">читать далее</a>';
+    }
+
+    return $excerpt;
+}
+     
+        // Пример сохранения статьи с анонсом
+public function store(Request $request) {
+    $article = new Article();
+    $article->title = $request->input('title');
+    $article->content = $request->input('content');
+    
+    // Генерация анонса
+    $article->excerpt = generateExcerpt($article->content, $article->id);
+    
+    $article->save();
+
+    return redirect()->route('articles.index');
+}
+ ?>
+
+
+
+
+ <!DOCTYPE html>
+
+<html lang="ru">
+@yield('main_content')
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="width=device-width, initial-scale=1.0">
+    <title>Твой блог.Главная страница</title>
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+
+  </head>
+  <body>
+    @yield('main_content')
+  </body>
+  </html>
+
+
+
+  @extends('form')
+
+@section('main_content')
+      <p>jdnvijsnvjsfvnsjdvn</p>
+  @endsection
